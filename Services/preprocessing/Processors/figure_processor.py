@@ -38,7 +38,6 @@ class FigureProcessor:
                 for m in self.caption_pattern.finditer(text)}
     
     def _classify_figure(self, img_path: Path) -> str:
-        """Classify using OCR text + visual features"""
         ocr_text = self._extract_ocr(img_path).lower()
         
         if any(x in ocr_text for x in ["table", "row", "column"]):

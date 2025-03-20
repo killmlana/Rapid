@@ -11,11 +11,10 @@ class TextProcessor:
         self.section_rules = self._compile_rules()
         
     def _compile_rules(self):
-        """Create priority-ordered regex patterns"""
         rules = []
         for section, config in Config.SECTION_PATTERNS.items():
             pattern = re.compile(
-                r'^.*?\b(' +  # Match from start of line
+                r'^.*?\b(' + 
                 '|'.join(config["keywords"]) + 
                 r')\b.*$', 
                 re.IGNORECASE
@@ -24,14 +23,12 @@ class TextProcessor:
         return sorted(rules, key=lambda x: x[2], reverse=True)
 
     def _classify_section(self, text: str) -> str:
-        """Classify text line into a section using configured rules"""
         for pattern, section, _ in self.section_rules:
             if pattern.search(text):
                 return section
-        return "other"  # Default section
+        return "other"  
 
     def _detect_via_formatting(self, doc: fitz.Document) -> Dict[str, List[str]]:
-        """Detect headings by font characteristics"""
         sections = {}
         current_section = "header"
         
@@ -41,7 +38,7 @@ class TextProcessor:
                 if "lines" in block:
                     for line in block["lines"]:
                         for span in line["spans"]:
-                            if span["size"] > 12 and span["flags"] & 2**4:  # Bold & large
+                            if span["size"] > 12 and span["flags"] & 2**4:  
                                 section = self._classify_section(span["text"])
                                 if section != current_section:
                                     current_section = section
@@ -55,4 +52,4 @@ class TextProcessor:
             return self._detect_via_formatting(doc)
         except Exception as e:
             logging.error(f"Section detection failed: {str(e)}")
-            return {"full_text": text}  # Fallback
+            return {"full_text": text} 
