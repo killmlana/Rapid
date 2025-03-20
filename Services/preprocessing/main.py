@@ -18,11 +18,9 @@ class PreprocessingPipeline:
 
     def process_paper(self, paper_dir: Path):
         try:
-            # Load raw data
             with open(paper_dir / "raw_data.json") as f:
                 raw_data = json.load(f)
             
-            # Process components
             pdf_path = paper_dir / "fulltext.pdf"
             processed = {
                 "metadata": raw_data["metadata"],
@@ -40,7 +38,6 @@ class PreprocessingPipeline:
             # Quality checks
             #processed = self.quality_checker.validate_output(processed)
             
-            # Save results
             with open(paper_dir / "processed.json", "w") as f:
                 json.dump(processed, f, indent=2)
                 
